@@ -11,3 +11,7 @@
 @property NSMutableDictionary* regionWatchers;
 - (EstimoteBeacons*)pluginInitialize;
 @end
+
+
+@property (nonatomic, copy) NSString *onEnter;
+@property (nonatomic, copy) NSString *onExit;

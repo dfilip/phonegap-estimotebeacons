@@ -76,13 +76,42 @@ EstimoteBeacons.prototype.stopRangingBeaconsInRegion = function (successCallback
         []
     );
 };
+/*
+EstimoteBeacons.prototype.startMonitoringBeaconsInRegion = function(successCallback, options) {
+    var METHOD_NAME = 'startMonitoringBeaconsInRegion';
 
-EstimoteBeacons.prototype.startMonitoringForRegion = function (id, majorOrCallback, minorOrCallback, successCallback, errorCallback, notifyEntryStateOnDisplay) {
-    var major = (typeof majorOrCallback === 'function') ? null : majorOrCallback;
-    var minor = (typeof minorOrCallback === 'function') ? null : minorOrCallback;
-    successCallback = (typeof majorOrCallback === 'function') ? majorOrCallback : successCallback;
-    errorCallback = (typeof minorOrCallback === 'function') ? minorOrCallback : errorCallback;
-    var notify = (notifyEntryStateOnDisplay === true) ? true : false;
+    if(!isFunction(successCallback)) {
+        logError('successCallback parameter must be a function', METHOD_NAME);
+        return;
+    }
+
+    exec(
+        successCallback,
+        ERROR_CALLBACK,
+        PLUGIN_NAME,
+        METHOD_NAME,
+        [options]
+    );
+};
+*/
+EstimoteBeacons.prototype.startMonitoringBeaconsInRegion = function (successCallback, options ) {
+    
+    /*
+    onEnter: 'onEnter'
+    onExit: 'onExit'
+    scanPeriod: 5000
+    waitPeriod: 200
+    */
+    var id = (typeof options.id == 'undefined') ? null:options.id;
+    var major = (typeof options.major == 'undefined') ? null : options.major;
+    var minor = (typeof options.minor === 'undefined') ? null : options.minor;
+    var onEnter = (typeof options.onEnter == 'undefined') ?null:options.onEnter;
+    var errorCallback = function()
+    {
+        console.log('something bad happened');
+    };
+
+    var notify = true;
 
     if (errorCallback === null) {
         errorCallback = function () {
@@ -118,7 +147,7 @@ EstimoteBeacons.prototype.startMonitoringForRegion = function (id, majorOrCallba
         errorCallback,
         "EstimoteBeacons",
         "startMonitoringForRegion",
-        [id, major, minor, notify]
+        [id, major, minor, notify, onEnter, onExit]
     );
 };
 
