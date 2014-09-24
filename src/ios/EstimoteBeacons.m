@@ -62,11 +62,8 @@
     NSString* regionid = [command.arguments objectAtIndex:0];
     id major = [command.arguments objectAtIndex:1];
     id minor = [command.arguments objectAtIndex:2];
-    NSString* onEnter = [command.arguments objectAtIndex:4];
-    NSString* onExit = [command.arguments objectAtIndex:5];
-
-    self.onEnter = onEnter;
-    self.onExit = onExit;
+    self.onEnter = [command.arguments objectAtIndex:4];
+    self.onExit = [command.arguments objectAtIndex:5];
 
     if([self.regionWatchers objectForKey:regionid] != nil) {
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Region with given ID is already monitored."] callbackId:command.callbackId];
@@ -494,10 +491,25 @@
              inRegion:(ESTBeaconRegion *)region
 {
     self.beacons = beacons;
-    NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.onEnter, jsonStr];
-    NSLog(@"jsCallBack: %@",jsCallBack);
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
-    NSLog(@"Estimote: didDiscoverBeacons");
+
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:beacons
+                                                   options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                     error:&error];
+    if (! jsonData) {
+        NSLog(@"PushPlugin_ERROR: %@", error);
+    } else {
+        NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+        NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.onEnter, jsonStr];
+        NSLog(@"jsCallBack: %@",jsCallBack);
+        [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+        NSLog(@"Estimote: didDiscoverBeacons");
+    }
+
+
+
+    
 }
 
 -(void)beaconManager:(ESTBeaconManager *)manager
