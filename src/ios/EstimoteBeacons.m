@@ -492,8 +492,10 @@
 {
     self.beacons = beacons;
 
+    NSMutableDictionary *bcns = [beacons mutableCopy];
+    NSError *error;
 
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:beacons
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:bcns
                                                    options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
                                                      error:&error];
     if (! jsonData) {
