@@ -492,14 +492,14 @@
 {
     self.beacons = beacons;
 
-    NSMutableDictionary *bcns = [beacons mutableCopy];
+    //NSMutableDictionary *bcns = [beacons mutableCopy];
     NSError *error;
 
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:bcns
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:beacons
                                                    options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
                                                      error:&error];
     if (! jsonData) {
-        NSLog(@"PushPlugin_ERROR: %@", error);
+        NSLog(@"Estimote: %@", error);
     } else {
         NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
