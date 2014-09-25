@@ -490,6 +490,8 @@
    didDiscoverBeacons:(NSArray *)beacons
              inRegion:(ESTBeaconRegion *)region
 {
+
+    NSLog(@"Estimote: didDiscoverBeacons");
     self.beacons = beacons;
 
     //NSMutableDictionary *bcns = [beacons mutableCopy];
@@ -501,6 +503,8 @@
     if (! jsonData) {
         NSLog(@"Estimote: %@", error);
     } else {
+
+        NSLog(@"Estimote: about to create jsonStr");
         NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.onEnter, jsonStr];
