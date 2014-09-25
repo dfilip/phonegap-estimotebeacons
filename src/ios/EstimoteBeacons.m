@@ -505,6 +505,7 @@
     } else {
 
         NSLog(@"Estimote: about to create jsonStr");
+        NSLog(@"Estimote: jsonData: %@",jsonData);
         NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.onEnter, jsonStr];
