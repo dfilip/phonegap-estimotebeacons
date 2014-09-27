@@ -524,6 +524,15 @@
 }
 
 -(void)beaconManager:(ESTBeaconManager *)manager
+     didEnterRegion:(ESTBeaconRegion *)region
+{
+    NSLog(@"Estimote: didEnterRegion");
+    [manager startEstimoteBeaconsDiscoveryForRegion:region];
+    NSLog(@"Estimote: called startEstimoteBeaconsDiscoveryForRegion");
+}
+
+
+-(void)beaconManager:(ESTBeaconManager *)manager
      didRangeBeacons:(NSArray *)beacons
             inRegion:(ESTBeaconRegion *)region
 {
