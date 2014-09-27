@@ -16,6 +16,7 @@
 
 - (EstimoteBeacons*)pluginInitialize
 {
+    NSLog(@"Estimote: init");
     // craete manager instance
     self.beaconManager = [[ESTBeaconManager alloc] init];
     self.beaconManager.delegate = self;
@@ -33,6 +34,7 @@
 #pragma mark - Start monitoring methods
 
 - (void)startEstimoteBeaconsDiscoveryForRegion:(CDVInvokedUrlCommand*)command {
+    NSLog(@"Estimote: startEstimoteBeaconsDiscoveryForRegion");
     // stop existing discovery/ranging
     [self.beaconManager stopEstimoteBeaconDiscovery];
     [self.beaconManager stopRangingBeaconsInRegion:self.currentRegion];
@@ -59,6 +61,7 @@
 
 - (void)startMonitoringForRegion:(CDVInvokedUrlCommand*)command
 {
+    NSLog(@"Estimote: startMonitoringForRegion");
     NSString* regionid = [command.arguments objectAtIndex:0];
     id major = [command.arguments objectAtIndex:1];
     id minor = [command.arguments objectAtIndex:2];
@@ -83,6 +86,7 @@
 
         [self.regionWatchers setObject:command.callbackId  forKey:regionid];
     }
+    NSLog(@"Estimote: Finished call - startMonitoringForRegion");
 }
 
 #pragma mark - Stop monitoring methods
@@ -523,6 +527,7 @@
      didRangeBeacons:(NSArray *)beacons
             inRegion:(ESTBeaconRegion *)region
 {
+    NSLog(@"Estimote: didRangeBeacons");
     self.beacons = beacons;
 }
 
