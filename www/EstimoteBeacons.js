@@ -505,6 +505,18 @@ EstimoteBeacons.prototype.stopVirtualBeacon = function(successCallback) {
         []
     );
 };
+if(!window.plugins) {
+    window.plugins = {};
+}
+if (!window.plugins.EstimoteBeacons) {
+    window.plugins.EstimoteBeacons = new EstimoteBeacons();
+}
 
+
+if( module.exports )
+{
+    module.exports = window.plugins.EstimoteBeacons;
+}
+/*
 var estimoteBeacons = new EstimoteBeacons();
-module.exports = estimoteBeacons;
+module.exports = estimoteBeacons;*/

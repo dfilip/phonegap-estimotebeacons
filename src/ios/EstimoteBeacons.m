@@ -16,6 +16,7 @@
 
 - (EstimoteBeacons*)pluginInitialize
 {
+    NSLog(@"Estimote: init");
     // craete manager instance
     self.beaconManager = [[ESTBeaconManager alloc] init];
     self.beaconManager.delegate = self;
@@ -33,6 +34,7 @@
 #pragma mark - Start monitoring methods
 
 - (void)startEstimoteBeaconsDiscoveryForRegion:(CDVInvokedUrlCommand*)command {
+    NSLog(@"Estimote: startEstimoteBeaconsDiscoveryForRegion");
     // stop existing discovery/ranging
     [self.beaconManager stopEstimoteBeaconDiscovery];
     [self.beaconManager stopRangingBeaconsInRegion:self.currentRegion];
@@ -59,6 +61,7 @@
 
 - (void)startMonitoringForRegion:(CDVInvokedUrlCommand*)command
 {
+    NSLog(@"Estimote: startMonitoringForRegion");
     NSString* regionid = [command.arguments objectAtIndex:0];
     id major = [command.arguments objectAtIndex:1];
     id minor = [command.arguments objectAtIndex:2];
@@ -83,6 +86,7 @@
 
         [self.regionWatchers setObject:command.callbackId  forKey:regionid];
     }
+    NSLog(@"Estimote: Finished call - startMonitoringForRegion");
 }
 
 #pragma mark - Stop monitoring methods
@@ -490,17 +494,22 @@
    didDiscoverBeacons:(NSArray *)beacons
              inRegion:(ESTBeaconRegion *)region
 {
+
+    NSLog(@"Estimote: didDiscoverBeacons");
     self.beacons = beacons;
 
-    NSMutableDictionary *bcns = [beacons mutableCopy];
+    //NSMutableDictionary *bcns = [beacons mutableCopy];
     NSError *error;
 
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:bcns
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:beacons
                                                    options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
                                                      error:&error];
     if (! jsonData) {
-        NSLog(@"PushPlugin_ERROR: %@", error);
+        NSLog(@"Estimote: %@", error);
     } else {
+
+        NSLog(@"Estimote: about to create jsonStr");
+        NSLog(@"Estimote: jsonData: %@",jsonData);
         NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
         NSString * jsCallBack = [NSString stringWithFormat:@"%@(%@);", self.onEnter, jsonStr];
@@ -515,9 +524,19 @@
 }
 
 -(void)beaconManager:(ESTBeaconManager *)manager
+     didEnterRegion:(ESTBeaconRegion *)region
+{
+    NSLog(@"Estimote: didEnterRegion");
+    [manager startEstimoteBeaconsDiscoveryForRegion:region];
+    NSLog(@"Estimote: called startEstimoteBeaconsDiscoveryForRegion");
+}
+
+
+-(void)beaconManager:(ESTBeaconManager *)manager
      didRangeBeacons:(NSArray *)beacons
             inRegion:(ESTBeaconRegion *)region
 {
+    NSLog(@"Estimote: didRangeBeacons");
     self.beacons = beacons;
 }
 
