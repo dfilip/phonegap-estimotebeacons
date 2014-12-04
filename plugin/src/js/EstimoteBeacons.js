@@ -821,3 +821,10 @@ EstimoteBeacons.prototype.stopVirtualBeacon = function(successCallback) {
 
 var estimoteBeacons = new EstimoteBeacons();
 module.exports = estimoteBeacons;
+
+if(typeof window.plugins == 'undefined'){
+	window.plugins = [];
+}
+window.plugins.EstimoteBeacons = estimoteBeacons;
+
+
