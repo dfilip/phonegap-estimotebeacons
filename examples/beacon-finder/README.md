@@ -1,28 +1,47 @@
-Example application: Beacon Finder
-========================
-Beacon Finder shows a dynamic list of available beacons with approximate distances from the phone.
+# Example application: Beacon Finder
 
-![Beacon finder in action](http://i.imgur.com/JhiMyvA.png)
+Beacon Finder is an example app that finds and displays Estimote Beacons.
 
-## How to run it?
+## Discovery methods
 
-This app is based on default PhoneGap application. In order to run it please:
-- create new PhoneGap application
-- override (not replace!) default contents of `www` folder with files from this folder
-- add iBeacons PhoneGap plugin
-- `phonegap local build ios`
-- run the app
+There are three methods of discovery demonstrated by the app:
 
-## Problems?
+* Scanning - beacon data (distance not available, uses CoreBluetooth discovery, only available on iOS)
+* Ranging - beacon data including distance (uses CoreLocation ranging on iOS, available also on Android)
+* Monitoring - region data (uses CoreLocation monitoring on iOS, available also on Android)
 
-If app isn't working, make sure that following text is present in your `config.xml`:
+Different beacon properties are displayed depending on the method used. Monitoring displays region data.
 
-    <feature name="EstimoteBeacons">
-        <param name="ios-package" value="EstimoteBeacons" />
-        <param name="onload" value="true" />
-    </feature>
+## Screenshot
 
-It's not? Add it.
+![Beacon Finder screenshot](beacon-finder-screenshot.png)
 
-## Still not working?
-Try the [troubleshooting guide](https://github.com/kdzwinel/phonegap-estimotebeacons/wiki/Troubleshooting-guide).
+## How to build and run it?
+
+This app has been tested with Apache Cordova. Start by installing Cordova on your computer. Installation instructions can be found in the [Cordova documentation](http://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html#The%20Command-Line%20Interface), and the [Evothings Cordova documentation](http://evothings.com/doc/build/build-overview.html) contains detailed step-by-step instructions.
+
+When you have installed Cordova, do the following steps to build and run the example app.
+
+Open a command window and go to the examples/beacon-finder directory, e.g.:
+
+    cd examples/beacon-finder
+
+Add the Estimote plugin, this just needs to be done once:
+
+    cordova plugin add https://github.com/evothings/phonegap-estimotebeacons.git
+
+Add the platforms you wish to use (Android, iOS), this also only needs to be done once:
+
+    cordova platform add android
+    cordova platform add ios
+
+To build and install the app on Android, use these commands:
+
+    cordova build android
+    adb install -r platforms/android/ant-build/BeaconFinder-debug.apk
+
+To build and install the app on iOS, first build an Xcode project:
+
+    cordova build ios
+
+Then open and run the generated project using Xcode: platforms/ios/BeaconFinder.xcodeproj
