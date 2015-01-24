@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.estimote.sdk.*;
 
+import android.bluetooth.BluetoothAdapter;
+
 import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +48,7 @@ public class EstimoteBeacons extends CordovaPlugin
 
 		super.initialize(cordova, webView);
 
-		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //turn bluetooth on
         if (!bluetoothAdapter.isEnabled()) {
