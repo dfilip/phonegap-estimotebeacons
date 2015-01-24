@@ -352,11 +352,6 @@ EstimoteBeacons.prototype.startRangingBeaconsInRegion = function (region, succes
 		return false;
 	}
 
-	var scanPeriod, waitPeriod;
-	scanPeriod = waitPeroid = 10;
-
-	if()
-
 	exec(success,
 		error,
 		"EstimoteBeacons",
