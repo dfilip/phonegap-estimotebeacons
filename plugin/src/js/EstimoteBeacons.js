@@ -352,6 +352,11 @@ EstimoteBeacons.prototype.startRangingBeaconsInRegion = function (region, succes
 		return false;
 	}
 
+	var scanPeriod, waitPeriod;
+	scanPeriod = waitPeroid = 10;
+
+	if()
+
 	exec(success,
 		error,
 		"EstimoteBeacons",
@@ -443,8 +448,26 @@ EstimoteBeacons.prototype.stopRangingBeaconsInRegion = function (region, success
  *   )
  */
 EstimoteBeacons.prototype.startMonitoringForRegion = function (
-	region, success, error, notifyEntryStateOnDisplay)
+	region, success, error, notifyEntryStateOnDisplay, opt)
 {
+
+	var args = [region];
+	var scanPeriod, waitPeriod;
+	scanPeriod = waitPeriod = 10;
+	var opts = {scanPeriod: scanPeriod, waitPeriod: waitPeriod};
+
+
+	if( window.device.platform == 'Android' ){
+		if(typeof notifyEntryStateOnDisplay == 'function' && typeof opt == 'function' && typeof success == 'number' && typeof error == 'number'){
+			opts = { scanPeriod: success, waitPeriod: error};
+			success = notifyEntryStateOnDisplay;
+			error = opt;
+		}
+		args.push(opts);
+	}else{
+		args.push(!!notifyEntryStateOnDisplay);
+	}
+
 	if (!checkExecParamsRegionSuccessError(region, success, error)) {
 		return false;
 	}
@@ -453,7 +476,7 @@ EstimoteBeacons.prototype.startMonitoringForRegion = function (
 		error,
 		"EstimoteBeacons",
 		"startMonitoringForRegion",
-		[region, !!notifyEntryStateOnDisplay]
+		args
 	);
 
 	return true;

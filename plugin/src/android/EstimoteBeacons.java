@@ -46,6 +46,14 @@ public class EstimoteBeacons extends CordovaPlugin
 
 		super.initialize(cordova, webView);
 
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        //turn bluetooth on
+        if (!bluetoothAdapter.isEnabled()) {
+            bluetoothAdapter.enable(); 
+        } 
+
+
 		if (mBeaconManager == null) {
 			mBeaconManager = new BeaconManager(webView.getContext());
 		}
@@ -66,6 +74,9 @@ public class EstimoteBeacons extends CordovaPlugin
 	public void onReset() {
 		Log.i(LOGTAG, "onReset");
 		disconnectBeaconManager();
+
+		mRangingCallbackContexts = new HashMap<String, CallbackContext>();
+		mMonitoringCallbackContexts = new HashMap<String, CallbackContext>();
 	}
 
 	/**
@@ -240,6 +251,11 @@ public class EstimoteBeacons extends CordovaPlugin
 
 		final Region region = createRegion(json);
 
+		// scan for 10s, wait for 10s
+		JSONObject timing = cordovaArgs.getJSONObject(1);
+		final long scanPeriod = timing.getLong("scanPeriod");
+		final long waitPeriod = timing.getLong("waitPeriod");
+
 		// TODO: How to handle case when region already monitored?
 		// Stop monitoring then start again?
 		// Currently, if monitoring callback already exists we
@@ -251,6 +267,8 @@ public class EstimoteBeacons extends CordovaPlugin
 
 		// Add callback to hash map.
 		mMonitoringCallbackContexts.put(key, callbackContext);
+
+		mBeaconManager.setBackgroundScanPeriod(scanPeriod, waitPeriod);
 
 		// Create monitoring listener.
 		mBeaconManager.setMonitoringListener(new PluginMonitoringListener());
@@ -390,12 +408,28 @@ public class EstimoteBeacons extends CordovaPlugin
 	{
 		JSONArray jsonArray = new JSONArray();
 		for (Beacon b : beacons) {
+			// Compute proximity value.
+			Utils.Proximity proximityValue = Utils.computeProximity(b);
+			int proximity = 0; // Unknown.
+			if (Utils.Proximity.IMMEDIATE == proximityValue) { proximity = 1; }
+			else if (Utils.Proximity.NEAR == proximityValue) { proximity = 2; }
+			else if (Utils.Proximity.FAR == proximityValue) { proximity = 3; }
+
+			// Compute distance value.
+			double distance = Utils.computeAccuracy(b);
+
+			// Normalize UUID.
+			String uuid = Utils.normalizeProximityUUID(b.getProximityUUID());
+
+			// Construct JSON object for beacon.
 			JSONObject json = new JSONObject();
 			json.put("major", b.getMajor());
 			json.put("minor", b.getMinor());
 			json.put("rssi", b.getRssi());
 			json.put("measuredPower", b.getMeasuredPower());
-			json.put("proximityUUID", b.getProximityUUID());
+			json.put("proximityUUID", uuid);
+			json.put("proximity", proximity);
+			json.put("distance", distance);
 			json.put("name", b.getName());
 			json.put("macAddress", b.getMacAddress());
 			jsonArray.put(json);
